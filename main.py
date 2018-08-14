@@ -20,13 +20,13 @@ areas = [
 ]
 
 
-def docket_heading ():
+def docket_heading (p):
     area = areas[random.randint(0, len(areas)-1)]
     p.set(bold=True, double_height=True)
     p.writelines(area)
     p.set(bold=False, double_height=False)
 
-def docket_meta_details():
+def docket_meta_details(p):
     table_num = random.randint(1,100)
     staff = [
         "BORIS",
@@ -71,18 +71,18 @@ def docket_meta_details():
     p.writelines("Covers: " + covers)
     p.writelines("\n")
 
-def add_covers():
+def add_covers(p):
 
-    make_entrees()
-    make_mains()
+    make_entrees(p)
+    make_mains(p)
 
     # randomly have a dessert
     if (random.random() - 0.2 > 0.5):
-        make_dessert()
+        make_dessert(p)
 
     p.writelines("\n")
 
-def make_entrees():
+def make_entrees(p):
     item_max = 5
     
     entrees = [
@@ -113,8 +113,8 @@ def make_entrees():
                        + entrees[random.randint(1,len(entrees)-1)])
         p.writelines(entree_text)
     
-def make_mains():
-    item_max = 5
+def make_mains(p):
+    item_max = 10
     mains = [
         "NASI",
         "EYE",
@@ -147,7 +147,7 @@ def make_mains():
                      + mains[random.randint(1,len(mains)-1)])
         p.writelines(main_text)
 
-def make_dessert():
+def make_dessert(p):
     item_max = 5
     desserts = [
         "STICKY DATE PUDDING",
@@ -168,21 +168,23 @@ def make_dessert():
                     + desserts[random.randint(1,len(desserts)-1)])
         p.writelines(des_text)
 
+def make_a_docket():
+    port = Serial(STANDARD_SERIAL_PORT)
+    with EscposIO(port) as p:
+        docket_heading(p)
+        docket_meta_details(p)
+        add_covers(p)
+    print("should have a docket printed")
+
 
 if __name__ == '__main__':
-    num_of_dockets = random.randint(1,10)
+    num_of_dockets = random.randint(11,20)
     print('generating some mock orders')
     print('going to send ' + str(num_of_dockets) + ' dockets')
 
-    with EscposIO(Serial(STANDARD_SERIAL_PORT)) as p:
-
-        for _ in range(0, num_of_dockets):
-            # uncomment to add random delay to dockets
-            # time.sleep(random.randint(1,5))
-
-            docket_heading()
-            docket_meta_details()
-            add_covers()
-            print("should have a docket printed")
+    for _ in range(0, num_of_dockets):
+        # uncomment to add random delay to dockets
+        # time.sleep(random.randint(1,5))
+        make_a_docket()
 
     print("finished. all " + str(num_of_dockets) + " dockets sent")
