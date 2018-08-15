@@ -112,6 +112,9 @@ def make_entrees(p):
                        + "    "
                        + entrees[random.randint(1,len(entrees)-1)])
         p.writelines(entree_text)
+
+
+    p.writelines("\n")
     
 def make_mains(p):
     item_max = 10
@@ -147,6 +150,8 @@ def make_mains(p):
                      + mains[random.randint(1,len(mains)-1)])
         p.writelines(main_text)
 
+    p.writelines("\n")
+
 def make_dessert(p):
     item_max = 5
     desserts = [
@@ -160,6 +165,7 @@ def make_dessert(p):
 
     p.set(underline=True)
     p.writelines("DESSERT")
+    p.set(underline=False)
     p.writelines("\n")
 
     for _ in range(1, 4):
@@ -168,23 +174,25 @@ def make_dessert(p):
                     + desserts[random.randint(1,len(desserts)-1)])
         p.writelines(des_text)
 
-def make_a_docket():
-    port = Serial(STANDARD_SERIAL_PORT)
-    with EscposIO(port) as p:
-        docket_heading(p)
-        docket_meta_details(p)
-        add_covers(p)
-    print("should have a docket printed")
+    p.writelines("\n")
+
 
 
 if __name__ == '__main__':
-    num_of_dockets = random.randint(11,20)
+    num_of_dockets = random.randint(10,20)
     print('generating some mock orders')
     print('going to send ' + str(num_of_dockets) + ' dockets')
+
 
     for _ in range(0, num_of_dockets):
         # uncomment to add random delay to dockets
         # time.sleep(random.randint(1,5))
-        make_a_docket()
+        port = Serial(STANDARD_SERIAL_PORT)
+        with EscposIO(port) as p:
+            docket_heading(p)
+            docket_meta_details(p)
+            add_covers(p)
+        print("should have a docket printed")
+
 
     print("finished. all " + str(num_of_dockets) + " dockets sent")
