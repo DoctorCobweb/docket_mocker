@@ -14,16 +14,22 @@ to install this module:
    conda create --name epson
    source activate epson
 
-2. locate python-escpos and move it to your site-packages folder
+2. locate python-escpos and move it to your site-packages folder for 'epson' conda env. 
 
-   for 'epson' conda env. 
+   e.g. on MacOS location is /home/der/anaconda3/envs/epson/lib/python3.7/site-packages
 
-   e.g. location is /home/der/anaconda3/envs/epson/lib/python3.7/site-packages
+3. install it using 'pip -e' to install from a local path
 
-3. run pip install -e escpos to install escpos from a local project path.
-   => it can then be imported in other src files
+   `~/anaconda/envs/epson/bin/pip install -e ~/anaconda/envs/epson/python3.7/site-packages/python-escpos-3.0a4`  
 
-4. something like this should now work:
+4. when you try to import it like this:  
 
-   from escpos.print import Serial
-   ...
+   `from escpos.print import Serial`  
+
+   you will get an error for file not found for 'capabilities.json'
+   => to fix: find this file under the /capabilities-data/dist/ folder and copy it over to src/ folder
+
+5. you should be able to import it without errors:  
+   `from escpos.print import Serial`  
+
+

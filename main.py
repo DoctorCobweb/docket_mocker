@@ -20,9 +20,9 @@ areas = [
     "SPORTS BAR",
 ]
 
+# global constants 
 PER_ITEM_MAX = 5
 ITEM_MAX = 5
-
 
 def docket_heading (p):
     # TODO: make heading in RED color
@@ -32,9 +32,6 @@ def docket_heading (p):
     p.set(bold=False, double_height=False, double_width=False)
 
 def docket_meta_details(p):
-    # TODO:
-    # 1. make variable extra content. less or more content, randomly
-    table_num = random.randint(1,100)
     staff = [
         "BORIS",
         "BORAT",
@@ -46,6 +43,58 @@ def docket_meta_details(p):
         "SYNTHIA",
     ]
 
+    tablet_num = str(random.randint(1,5))
+    staff_member = staff[random.randint(0, len(staff)-1)]
+    order_time = dt.datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+
+    # fixed, dependable content
+    p.writelines("Tablet " + tablet_num)
+    p.writelines("Clerk: " + staff_member)
+    p.writelines(order_time)
+
+    # variable content
+    write_table_line(p)
+    write_variable_content(p)
+    p.writelines("\n")
+
+def write_table_line(p):
+    # randomly dropout the table number line; happens when staff order a meal.
+    # it's not often so make dropout a rare occurance here.
+    # TODO:
+    # 1. make table num RED
+
+    table_num = str(random.randint(1,80))
+    drop_prob = 0.2
+
+    def write_a_line():
+        table_text = ["TABLE No", "ORDER NUMBER"]
+        p.set(bold=True)
+        table_text_idx = random.randint(0,1)
+        if (table_text_idx == 0):
+            # "TABLE No *13/0*"
+            table_num_text = table_text[table_text_idx] + " *" + table_num + "/0*"
+            p.writelines(table_num_text)
+        else:
+            # "ORDER NUMBER 1"
+            table_num_text = table_text[table_text_idx] + " " + table_num
+            p.writelines(table_num_text)
+        p.set(bold=False)
+    if (random.random() < drop_prob):
+        # dont print out the table number
+        print('DROPPING the table number line. look out')
+    else:
+        write_table_line()
+
+def write_variable_content(p):
+    # most of the time we have a) and b). sometimes c)
+    # implement the variable content
+    #  a) Name:
+    #  b) Covers:
+    #  c) extra weird line "PRINT A/C - SARAH @ 11:04"
+
+    drop_prob_1 = 0.2
+    drop_prob_1 = 0.1
+    covers = str(random.randint(10,20))
     booking_name = [
         "Michelle",
         "Henry",
@@ -60,54 +109,33 @@ def docket_meta_details(p):
         "Phillip",
         "Earnest",
     ]
-
-
-    staff_member = staff[random.randint(0, len(staff)-1)]
-    order_time = dt.datetime.now().strftime("%d/%m/%Y %H:%M:%S")
-    tablet_num = str(random.randint(1,5))
     booker_name = booking_name[random.randint(0, len(booking_name)-1)]
-    covers = str(314145) + 'FIX'
-    table_num = str(random.randint(1,80))
 
-    p.writelines("Tablet " + tablet_num)
-    p.writelines("Clerk: " + staff_member)
-    p.writelines(order_time)
-
-    table_text = ["TABLE No", "ORDER NUMBER"]
-    # TODO:
-    # 1. make table num RED
-    # 2. randomly drop appearance of any table number; happens on some dockets
-    p.set(bold=True)
-    table_text_idx = random.randint(0,1)
-    if (table_text_idx == 0):
-        # "TABLE No *13/0*"
-        table_num_text = table_text[table_text_idx] + " *" + table_num + "/0*"
-        p.writelines(table_num_text)
+    if(random.random() < drop_prob_1):
+        print('skipping Name: line...')
     else:
-        # "ORDER NUMBER 1"
-        table_num_text = table_text[table_text_idx] + " " + table_num
-        p.writelines(table_num_text)
-    p.set(bold=False)
+        p.writelines("Name: " + booker_name)
 
-    p.writelines("Name: " + booker_name)
-    p.writelines("Covers: " + covers)
-    #p.writelines("blah blah")
-    p.writelines("\n")
+    if(random.random() < drop_prob_1):
+        print('skipping Covers: line...')
+    else:
+        p.writelines("Covers: " + covers)
+
+    if(random.random() < drop_prob_2):
+        print('skipping ultra random content line...')
+    else:
+        p.writelines("PRINT A/C - SARAH @ 11:04")
 
 def add_covers(p):
-
     make_entrees(p)
     make_mains(p)
-    make_dessert(p)
 
     # randomly have a dessert
-    '''
     if (random.random() - 0.2 > 0.5):
         make_dessert(p)
-    '''
 
     p.writelines("\n")
-    p.writelines("--------------------")
+    p.writelines("-------------------------------")
     p.writelines("\n")
 
 def make_entrees(p):
