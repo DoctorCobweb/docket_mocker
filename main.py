@@ -21,17 +21,25 @@ areas = [
 ]
 
 # global constants 
-PER_ITEM_MAX = 5
-ITEM_MAX = 5
+PER_ITEM_MAX = 2
+ITEM_MAX = 2
+p = Serial(STANDARD_SERIAL_PORT)
 
-def docket_heading (p):
-    # TODO: make heading in RED color
+def red_color():
+    p._raw(b'\x1b' + b'\x72\x01')
+
+def black_color():
+    p._raw(b'\x1b' + b'\x72\x00')
+
+def docket_heading ():
     area = areas[random.randint(0, len(areas)-1)]
     p.set(bold=True, double_height=True, double_width=True)
-    p.writelines(area)
+    red_color()
+    p.text("{0}\n".format(area))
+    black_color()
     p.set(bold=False, double_height=False, double_width=False)
 
-def docket_meta_details(p):
+def docket_meta_details():
     staff = [
         "BORIS",
         "BORAT",
@@ -48,20 +56,17 @@ def docket_meta_details(p):
     order_time = dt.datetime.now().strftime("%d/%m/%Y %H:%M:%S")
 
     # fixed, dependable content
-    p.writelines("Tablet " + tablet_num)
-    p.writelines("Clerk: " + staff_member)
-    p.writelines(order_time)
+    p.text("Tablet {0}\n".format(tablet_num))
+    p.text("Clerk: {}\n".format(staff_member))
+    p.text("{0}\n".format(order_time))
 
     # variable content
-    write_table_line(p)
-    write_variable_content(p)
-    p.writelines("\n")
+    write_table_line()
+    write_variable_content()
 
-def write_table_line(p):
+def write_table_line():
     # randomly dropout the table number line; happens when staff order a meal.
     # it's not often so make dropout a rare occurance here.
-    # TODO:
-    # 1. make table num RED
 
     table_num = str(random.randint(1,80))
     drop_prob = 0.2
@@ -72,20 +77,24 @@ def write_table_line(p):
         table_text_idx = random.randint(0,1)
         if (table_text_idx == 0):
             # "TABLE No *13/0*"
-            table_num_text = table_text[table_text_idx] + " *" + table_num + "/0*"
-            p.writelines(table_num_text)
+            table_num_text = "{0} *{1}/0*\n".format(table_text[table_text_idx],table_num)
+            red_color()
+            p.text(table_num_text)
+            black_color()
         else:
             # "ORDER NUMBER 1"
-            table_num_text = table_text[table_text_idx] + " " + table_num
-            p.writelines(table_num_text)
+            table_num_text = "{0} {1}\n".format(table_text[table_text_idx], table_num)
+            red_color()
+            p.text(table_num_text)
+            black_color()
         p.set(bold=False)
     if (random.random() < drop_prob):
         # dont print out the table number
         print('DROPPING the table number line. look out')
     else:
-        write_table_line()
+        write_a_line()
 
-def write_variable_content(p):
+def write_variable_content():
     # most of the time we have a) and b). sometimes c)
     # implement the variable content
     #  a) Name:
@@ -93,7 +102,7 @@ def write_variable_content(p):
     #  c) extra weird line "PRINT A/C - SARAH @ 11:04"
 
     drop_prob_1 = 0.2
-    drop_prob_1 = 0.1
+    drop_prob_2 = 0.1
     covers = str(random.randint(10,20))
     booking_name = [
         "Michelle",
@@ -112,33 +121,37 @@ def write_variable_content(p):
     booker_name = booking_name[random.randint(0, len(booking_name)-1)]
 
     if(random.random() < drop_prob_1):
-        print('skipping Name: line...')
+        print('DROPPING Name: line...')
     else:
-        p.writelines("Name: " + booker_name)
+        p.text("Name: {0}\n".format(booker_name))
 
     if(random.random() < drop_prob_1):
-        print('skipping Covers: line...')
+        print('DROPPING Covers: line...')
     else:
-        p.writelines("Covers: " + covers)
+        p.text("Covers: {0}\n".format(covers))
 
     if(random.random() < drop_prob_2):
-        print('skipping ultra random content line...')
+        print('DROPPING ultra random content line...')
     else:
-        p.writelines("PRINT A/C - SARAH @ 11:04")
+        p.text("\n")
+        p.text("PRINT A/C - SARAH @ 11:04\n")
+        p.text("\n")
 
-def add_covers(p):
-    make_entrees(p)
-    make_mains(p)
+def add_covers():
+    dessert_prob = 0.8
+    make_entrees()
+    make_mains()
 
     # randomly have a dessert
-    if (random.random() - 0.2 > 0.5):
-        make_dessert(p)
+    if (random.random() < dessert_prob):
+        make_dessert()
+    else:
+        print('DROPPING dessert')
 
-    p.writelines("\n")
-    p.writelines("-------------------------------")
-    p.writelines("\n")
+    p.text("\n")
+    p.text("-------------------------------\n")
 
-def make_entrees(p):
+def make_entrees():
     per_item_max = PER_ITEM_MAX
     #num_of_entrees = random.randint(1,3)
     num_of_entrees = ITEM_MAX
@@ -160,27 +173,27 @@ def make_entrees(p):
     ]
 
     p.set(underline=True)
-    p.writelines("ENTREES DINNER")
+    p.text("ENTREES DINNER\n")
     p.set(underline=False)
-    p.writelines("\n")
+    p.text("\n")
 
     for _ in range(1, num_of_entrees):
         entree_name = entrees[random.randint(1,len(entrees)-1)]
         item_quantity = random.randint(1, per_item_max)
-        entree_text = str(item_quantity) + "    " + entree_name
+        entree_text = "{0}    {1}\n".format(str(item_quantity), entree_name)
         num_item_extra_info = random.randint(1, item_quantity)
 
         p.set(bold=True, double_height=True)
-        p.writelines(entree_text)
+        p.text(entree_text)
         p.set(bold=False, double_height=False)
 
         for _ in range(1, num_item_extra_info):
             # make extra content for items
             item_extra_info()
 
-    p.writelines("\n")
+    p.text("\n")
     
-def make_mains(p):
+def make_mains():
     per_item_max = PER_ITEM_MAX
     num_of_mains = ITEM_MAX
     # num_of_mains = random.randint(1,3)
@@ -206,27 +219,27 @@ def make_mains(p):
     ]
 
     p.set(underline=True)
-    p.writelines("MAINS DINNER")
+    p.text("MAINS DINNER\n")
     p.set(underline=False)
-    p.writelines("\n")
+    p.text("\n\n")
 
     for _ in range(1, num_of_mains):
         main_name = mains[random.randint(1,len(mains)-1)]
         item_quantity = random.randint(1, per_item_max)
-        main_text = str(item_quantity) + "    " + main_name
+        main_text = "{0}    {1}\n".format(str(item_quantity), main_name)
         num_item_extra_info = random.randint(1, item_quantity)
 
         p.set(bold=True, double_height=True)
-        p.writelines(main_text)
+        p.text(main_text)
         p.set(bold=False, double_height=False)
 
         for _ in range(1, num_item_extra_info):
             # make extra content for items
             item_extra_info()
 
-    p.writelines("\n")
+    p.text("\n")
 
-def make_dessert(p):
+def make_dessert():
     per_item_max = PER_ITEM_MAX
     #num_of_desserts = random.randomint(1,3)
     num_of_desserts = ITEM_MAX  
@@ -240,33 +253,34 @@ def make_dessert(p):
     ]
 
     p.set(underline=True)
-    p.writelines("DESSERT")
+    p.text("DESSERT\n")
     p.set(underline=False)
-    p.writelines("\n")
+    p.text("\n\n")
 
     for _ in range(1, num_of_desserts):
         des_name = desserts[random.randint(1,len(desserts)-1)]
         item_quantity = random.randint(1,per_item_max)
-        des_text = str(item_quantity) + "    " + des_name
+        des_text = "{0}    {1}\n".format(str(item_quantity), des_name)
         num_item_extra_info = random.randint(1,item_quantity)
 
         p.set(bold=True, double_height=True)
-        p.writelines(des_text)
+        p.text(des_text)
         p.set(bold=False, double_height=False)
 
         for _ in range(1, num_item_extra_info):
             # make extra content for items
             item_extra_info()
 
-    p.writelines("\n")
+    p.text("\n")
+
 
 def item_extra_info():
     p.set(height=1)
-    p.writelines("1    MED RARE")
-    p.writelines("1    MUSH")
-    p.writelines("1    CHIPS GREENS")
-    p.writelines("1    XTRA GARLIC BUTT")
-    p.writelines("--------------------")
+    p.text("1    MED RARE\n")
+    p.text("1    MUSH\n")
+    p.text("1    CHIPS GREENS\n")
+    p.text("1    XTRA GARLIC BUTT\n")
+    p.text("--------------------\n")
 
 
 
@@ -279,12 +293,10 @@ if __name__ == '__main__':
     for _ in range(0, num_of_dockets):
         # uncomment to add random delay to dockets
         # time.sleep(random.randint(1,5))
-        port = Serial(STANDARD_SERIAL_PORT)
-        with EscposIO(port) as p:
-            docket_heading(p)
-            docket_meta_details(p)
-            add_covers(p)
+        docket_heading()
+        docket_meta_details()
+        add_covers()
+        p.cut()
         print("should have a docket printed")
-
 
     print("finished. all " + str(num_of_dockets) + " dockets sent")
