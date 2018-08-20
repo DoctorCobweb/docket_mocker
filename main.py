@@ -21,8 +21,8 @@ areas = [
 ]
 
 # global constants 
-PER_ITEM_MAX = 2
-ITEM_MAX = 2
+PER_ITEM_MAX = 5
+ITEM_MAX = 5
 p = Serial(STANDARD_SERIAL_PORT)
 
 def red_color():
