@@ -158,14 +158,16 @@ def make_entrees():
     
     entrees = [
         "GARLIC BREAD",
-        "OYSTERS NATURAL",
-        "OYSTERS KILPATRICK",
+        "OYSTERS NAT 1",
+        "OYSTERS KIL 1",
         "CRISPY CHIPS",
-        "CHILDS FISH AND CHIPS",
+        "CHILDS FISH",
+        "CHILDS ROAST",
         "CHILDS PARMI",
-        "CHILDS WHITING",
         "BRUSCHETTA",
-        "TASTING PLATE",
+        "CALAMARI",
+        "FELAFEL SMALL",
+        "LOADED FRIES",
         "CHILDS RICE",
         "CHILDS BOLOG",
         "CHILDS BURGER",
@@ -199,7 +201,7 @@ def make_mains():
     # num_of_mains = random.randint(1,3)
     mains = [
         "NASI",
-        "EYE",
+        "EYE FILLET 250GM",
         "PARMIGIANA",
         "BARRAMUNDI",
         "SALMON",
@@ -209,6 +211,7 @@ def make_mains():
         "MARINATED CHIC",
         "PAPPADELLE LAMB",
         "GNOCCHI",
+        "CALAMARI",
         "HANGER 200",
         "PORK CUTLET",
         "BIRYANI CURRY",
@@ -216,6 +219,17 @@ def make_mains():
         "BEEF BURGER",
         "WINTER GREENS",
         "SCOTCH FILLET",
+        "SHARE JUKE ONE",
+        "QUINOA SALAD",
+        "HANGER 400",
+        "FRIES",
+        "ROAST",
+        "SALMON SALAD",
+        "SCHNITZEL",
+        "PORTERHOUSE 300",
+        "CIGAR",
+        "CHICK RIBS",
+        "PORK BELLY"
     ]
 
     p.set(underline=True)
@@ -248,8 +262,12 @@ def make_dessert():
         "CREME CARAMEL",
         "CHILDS FROG POND",
         "CHILDS MOUSSE",
-        "CURROS",
-        "FOUNDANT",
+        "CHURROS",
+        "FONDANT",
+        "CHILDS ICE CREAM",
+        "DESSERT SPEC",
+        "CAKE DISPLAY",
+        "AFFOGATO"
     ]
 
     p.set(underline=True)
@@ -280,7 +298,7 @@ def item_extra_info():
     p.text("1    MUSH\n")
     p.text("1    CHIPS GREENS\n")
     p.text("1    XTRA GARLIC BUTT\n")
-    p.text("--------------------\n")
+    p.text("  --------------------\n")
 
 
 
