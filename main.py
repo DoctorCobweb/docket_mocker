@@ -5,6 +5,12 @@ import datetime as dt
 import time
 import menuItems as mi
 
+
+
+#------------------------------------------------------------
+# GLOBALS AND SERIAL PORT REFERENCE
+#------------------------------------------------------------
+
 # for usb-to-serial adapter if used
 USB_TO_SERIAL_PORT = "/dev/ttyUSB0"
 
@@ -19,11 +25,11 @@ PER_ITEM_MAX = 4
 ITEM_MAX = 3
 p = Serial(STANDARD_SERIAL_PORT)
 
-def red_color():
-    p._raw(b'\x1b' + b'\x72\x01')
 
-def black_color():
-    p._raw(b'\x1b' + b'\x72\x00')
+
+#------------------------------------------------------------
+# DOCKET HEADER AND META DETAILS
+#------------------------------------------------------------
 
 def docket_heading ():
     area = areas[random.randint(0, len(areas)-1)]
@@ -109,163 +115,64 @@ def write_variable_content():
         p.text("PRINT A/C - SARAH @ 11:04\n")
         p.text("\n")
 
+
+
+#------------------------------------------------------------
+# DOCKET COURSES AND ITEM INFOS 
+#------------------------------------------------------------
+
+def make_entrees():
+    entrees = mi.entrees
+    write_course_field("ENTREES DINNER")
+    write_menu_items(entrees, entrees_item_extra_info)
+    p.text("\n")
+    
+def make_mains():
+    mains = mi.mains
+    write_course_field("MAINS DINNER")
+    write_menu_items(mains, mains_item_extra_info)
+    p.text("\n")
+
+def make_desserts():
+    desserts = mi.desserts
+    write_course_field("DESSERT")
+    write_menu_items(desserts, dessert_item_extra_info)
+    p.text("\n")
+
 def make_call_away_docket():
     cad = mi.callAwayDocket
 
-    p.set(underline=True)
-    p.text("{0}\n".format(cad["courseField"]))
-    p.set(underline=False)
-    p.text("\n")
+    write_course_field(cad["course_field"])
 
     p.set(bold=True, double_height=True)
-    p.text("{0}\n".format(cad["menuItem"]))
+    p.text("{0}\n".format(cad["menu_item"]))
     p.set(bold=False, double_height=False)
 
     p.set(height=1)
     p.text("{0}\n".format(cad["info"][0]))
     p.text("  --------------------\n")
 
-
-
-def make_entrees():
-    per_item_max = PER_ITEM_MAX
-    num_of_entrees = ITEM_MAX
-    entrees = mi.entrees
-
-    p.set(underline=True)
-    p.text("ENTREES DINNER\n")
-    p.set(underline=False)
-    p.text("\n")
-
-    for _ in range(1, num_of_entrees):
-        entree_name = entrees[random.randint(1,len(entrees)-1)]
-        item_quantity = random.randint(1, per_item_max)
-        entree_text = "{0}    {1}\n".format(str(item_quantity), entree_name)
-        num_item_extra_info = random.randint(1, item_quantity)
-
-        p.set(bold=True, double_height=True)
-        p.text(entree_text)
-        p.set(bold=False, double_height=False)
-
-        for _ in range(1, num_item_extra_info):
-            # make extra content for items
-            entrees_item_extra_info()
-
-    p.text("\n")
-    
-def make_mains():
-    per_item_max = PER_ITEM_MAX
-    num_of_mains = ITEM_MAX
-    mains = mi.mains
-
-    p.set(underline=True)
-    p.text("MAINS DINNER\n")
-    p.set(underline=False)
-    p.text("\n\n")
-
-    for _ in range(1, num_of_mains):
-        main_name = mains[random.randint(1,len(mains)-1)]
-        item_quantity = random.randint(1, per_item_max)
-        main_text = "{0}    {1}\n".format(str(item_quantity), main_name)
-        num_item_extra_info = random.randint(1, item_quantity)
-
-        p.set(bold=True, double_height=True)
-        p.text(main_text)
-        p.set(bold=False, double_height=False)
-
-        for _ in range(1, num_item_extra_info):
-            # make extra content for items
-            mains_item_extra_info()
-
-    p.text("\n")
-
-def make_desserts():
-    per_item_max = PER_ITEM_MAX
-    num_of_desserts = ITEM_MAX  
-    desserts = mi.desserts
-
-    p.set(underline=True)
-    p.text("DESSERT\n")
-    p.set(underline=False)
-    p.text("\n\n")
-
-    for _ in range(1, num_of_desserts):
-        des_name = desserts[random.randint(1,len(desserts)-1)]
-        item_quantity = random.randint(1,per_item_max)
-        des_text = "{0}    {1}\n".format(str(item_quantity), des_name)
-        num_item_extra_info = random.randint(1,item_quantity)
-
-        p.set(bold=True, double_height=True)
-        p.text(des_text)
-        p.set(bold=False, double_height=False)
-
-        for _ in range(1, num_item_extra_info):
-            # make extra content for items
-            dessert_item_extra_info()
-
-    p.text("\n")
-
-def entrees_item_extra_info():
-    p.set(height=1)
-    p.text("1    ex cheese\n")
-    p.text("1    no pepper\n")
-    p.text("1    add jalepenos\n")
-    p.text("  --------------------\n")
-
-def mains_item_extra_info():
-    p.set(height=1)
-    p.text("1    MED RARE\n")
-    p.text("1    MUSH\n")
-    p.text("1    CHIPS GREENS\n")
-    p.text("1    XTRA GARLIC BUTT\n")
-    p.text("  --------------------\n")
-
-def dessert_item_extra_info():
-    p.set(height=1)
-    p.text("1    LEMON SCE\n")
-    p.text("1    ex scoop\n")
-    p.text("  --------------------\n")
-
 def make_standard_docket():
     # standard docket is entrees, mains, and sometimes desserts.
-    dessert_prob = 0.8
     make_entrees()
     make_mains()
 
     # randomly have a dessert
-    if (random.random() < dessert_prob):
+    if (random.random() < 0.8):
         make_desserts()
     else:
         print('DROPPING dessert')
 
 def make_dessert_docket():
-    p.set(underline=True)
-    p.text("DESSERT\n")
-    p.set(underline=False)
-    p.text("\n\n")
-
     per_item_max = PER_ITEM_MAX
     num_of_desserts = ITEM_MAX  
     desserts = mi.desserts
 
-    for _ in range(1, num_of_desserts):
-        des_name = desserts[random.randint(1,len(desserts)-1)]
-        item_quantity = random.randint(1,per_item_max)
-        des_text = "{0}    {1}\n".format(str(item_quantity), des_name)
-        num_item_extra_info = random.randint(1,item_quantity)
+    write_course_field("DESSERT")
+    write_menu_items(desserts, dessert_item_extra_info)
 
-        p.set(bold=True, double_height=True)
-        p.text(des_text)
-        p.set(bold=False, double_height=False)
+    write_course_field("CHILDS MENU")
 
-        for _ in range(1, num_item_extra_info):
-            # make extra content for items
-            dessert_item_extra_info()
-    
-    p.set(underline=True)
-    p.text("CHILDS MENU\n")
-    p.set(underline=False)
-    
     p.set(bold=True, double_height=True)
     p.text("4    CHILDS ICE CREAM\n")
     p.set(bold=False, double_height=False)
@@ -274,13 +181,88 @@ def make_dessert_docket():
     p.text("2    CHILDS FROG POND\n")
     p.set(bold=False, double_height=False)
 
-    p.set(underline=True)
-    p.text("CHILD DESSERT TOPS\n")
-    p.set(underline=False)
-    
+    write_course_field("CHILD DESSERT TOPS")
+
     p.set(bold=True, double_height=True)
     p.text("2    CHOCO TOPPING\n")
     p.set(bold=False, double_height=False)
+
+def write_course_field(text):
+    p.set(underline=True)
+    p.text("{0}\n".format(text))
+    p.set(underline=False)
+    p.text("\n")
+
+def write_menu_items(items, item_info_fn):
+    num_of_items = ITEM_MAX
+    per_item_max = PER_ITEM_MAX
+
+    if (not item_info_fn):
+        raise Exception('ERROR: no item_info_fn supplied')
+
+    for _ in range(1, num_of_items):
+        item_name = items[random.randint(1,len(items)-1)]
+        item_quantity = random.randint(1,per_item_max)
+        item_text = "{0}    {1}\n".format(str(item_quantity), item_name)
+        num_item_extra_info = random.randint(1,item_quantity)
+
+        p.set(bold=True, double_height=True)
+        p.text(item_text)
+        p.set(bold=False, double_height=False)
+
+        for _ in range(1, num_item_extra_info):
+            # make extra content for items
+            item_info_fn()
+
+def entrees_item_extra_info():
+    p.set(height=1)
+    if (random.random() < 0.5):
+        p.text("1    ex cheese\n")
+        p.text("1    no pepper\n")
+        p.text("1    add jalepenos\n")
+        p.text("  --------------------\n")
+    else:
+        p.text("1    no salt\n")
+        p.text("1    gluten free\n")
+        p.text("  --------------------\n")
+
+def mains_item_extra_info():
+    p.set(height=1)
+    if (random.random() <0.5):
+        p.text("1    MED RARE\n")
+        p.text("1    MUSH\n")
+        p.text("1    CHIPS GREENS\n")
+        p.text("1    XTRA GARLIC BUTT\n")
+        p.text("  --------------------\n")
+    else:
+        p.text("1    WELL DONE\n")
+        p.text("1    pep sce o/s\n")
+        p.text("  --------------------\n")
+
+
+def dessert_item_extra_info():
+    p.set(height=1)
+    if (random.random() < 0.5):
+        p.text("1    LEMON SCE\n")
+        p.text("1    ex scoop\n")
+        p.text("  --------------------\n")
+    else:
+        p.text("1    with sorbet instead\n")
+        p.text("1    ex cold\n")
+        p.text("1    sprinkles o/s\n")
+        p.text("  --------------------\n")
+
+
+
+#------------------------------------------------------------
+# DOCKET UTILITY FUNCTIONS
+#------------------------------------------------------------
+
+def red_color():
+    p._raw(b'\x1b' + b'\x72\x01')
+
+def black_color():
+    p._raw(b'\x1b' + b'\x72\x00')
 
 
 if __name__ == '__main__':
@@ -294,11 +276,11 @@ if __name__ == '__main__':
         # time.sleep(random.randint(1,5))
         docket_heading()
         docket_meta_details()
-        if (random.random() < 0.3):
+        if (random.random() < 0.01):
             # send a call away docket
             print("CALL AWAY docket")
             make_call_away_docket()
-        elif (random.random() < 0.5):
+        elif (random.random() < 0.8):
             # make a standard docket
             print("STANDARD docket")
             make_standard_docket()

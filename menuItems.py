@@ -56,8 +56,8 @@ courseFields = [
 ]
 
 callAwayDocket = {
-  "courseField": "SPECIAL INSTRUCTIONS",
-  "menuItem": "CALL AWAY",
+  "course_field": "SPECIAL INSTRUCTIONS",
+  "menu_item": "CALL AWAY",
   "info": ["1    go on mains"],
 }
 
