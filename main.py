@@ -3,7 +3,7 @@ from escpos.escpos import EscposIO
 import random
 import datetime as dt
 import time
-
+import menuItems as mi
 
 # for usb-to-serial adapter if used
 USB_TO_SERIAL_PORT = "/dev/ttyUSB0"
@@ -12,17 +12,11 @@ USB_TO_SERIAL_PORT = "/dev/ttyUSB0"
 STANDARD_SERIAL_PORT = "/dev/ttyS4"
 
 # as it appears on physical dockets
-areas = [
-    "Restaurant Bar",
-    "TAB BAR",
-    "JUKE BAR",
-    "GAMING BAR",
-    "SPORTS BAR",
-]
+areas = mi.docketStartFields
 
 # global constants 
-PER_ITEM_MAX = 5
-ITEM_MAX = 5
+PER_ITEM_MAX = 4
+ITEM_MAX = 3
 p = Serial(STANDARD_SERIAL_PORT)
 
 def red_color():
@@ -40,16 +34,7 @@ def docket_heading ():
     p.set(bold=False, double_height=False, double_width=False)
 
 def docket_meta_details():
-    staff = [
-        "BORIS",
-        "BORAT",
-        "JOHAN",
-        "CLAUS",
-        "IRIS",
-        "ADA",
-        "ZARA",
-        "SYNTHIA",
-    ]
+    staff = mi.staff
 
     tablet_num = str(random.randint(1,5))
     staff_member = staff[random.randint(0, len(staff)-1)]
@@ -104,20 +89,7 @@ def write_variable_content():
     drop_prob_1 = 0.2
     drop_prob_2 = 0.1
     covers = str(random.randint(10,20))
-    booking_name = [
-        "Michelle",
-        "Henry",
-        "Sarah",
-        "Jessica",
-        "Douglas",
-        "Matthew",
-        "Andrew",
-        "Stephanie",
-        "Kate",
-        "Brooke",
-        "Phillip",
-        "Earnest",
-    ]
+    booking_name = mi.bookingName
     booker_name = booking_name[random.randint(0, len(booking_name)-1)]
 
     if(random.random() < drop_prob_1):
@@ -137,42 +109,28 @@ def write_variable_content():
         p.text("PRINT A/C - SARAH @ 11:04\n")
         p.text("\n")
 
-def add_covers():
-    dessert_prob = 0.8
-    make_entrees()
-    make_mains()
+def make_call_away_docket():
+    cad = mi.callAwayDocket
 
-    # randomly have a dessert
-    if (random.random() < dessert_prob):
-        make_dessert()
-    else:
-        print('DROPPING dessert')
-
+    p.set(underline=True)
+    p.text("{0}\n".format(cad["courseField"]))
+    p.set(underline=False)
     p.text("\n")
-    p.text("-------------------------------\n")
+
+    p.set(bold=True, double_height=True)
+    p.text("{0}\n".format(cad["menuItem"]))
+    p.set(bold=False, double_height=False)
+
+    p.set(height=1)
+    p.text("{0}\n".format(cad["info"][0]))
+    p.text("  --------------------\n")
+
+
 
 def make_entrees():
     per_item_max = PER_ITEM_MAX
-    #num_of_entrees = random.randint(1,3)
     num_of_entrees = ITEM_MAX
-    
-    entrees = [
-        "GARLIC BREAD",
-        "OYSTERS NAT 1",
-        "OYSTERS KIL 1",
-        "CRISPY CHIPS",
-        "CHILDS FISH",
-        "CHILDS ROAST",
-        "CHILDS PARMI",
-        "BRUSCHETTA",
-        "CALAMARI",
-        "FELAFEL SMALL",
-        "LOADED FRIES",
-        "CHILDS RICE",
-        "CHILDS BOLOG",
-        "CHILDS BURGER",
-        "SWEET POT FRIES",
-    ]
+    entrees = mi.entrees
 
     p.set(underline=True)
     p.text("ENTREES DINNER\n")
@@ -191,46 +149,14 @@ def make_entrees():
 
         for _ in range(1, num_item_extra_info):
             # make extra content for items
-            item_extra_info()
+            entrees_item_extra_info()
 
     p.text("\n")
     
 def make_mains():
     per_item_max = PER_ITEM_MAX
     num_of_mains = ITEM_MAX
-    # num_of_mains = random.randint(1,3)
-    mains = [
-        "NASI",
-        "EYE FILLET 250GM",
-        "PARMIGIANA",
-        "BARRAMUNDI",
-        "SALMON",
-        "PRAWN RISOTTO",
-        "CHILLI CALAMARI",
-        "DUCK",
-        "MARINATED CHIC",
-        "PAPPADELLE LAMB",
-        "GNOCCHI",
-        "CALAMARI",
-        "HANGER 200",
-        "PORK CUTLET",
-        "BIRYANI CURRY",
-        "NACHOS",
-        "BEEF BURGER",
-        "WINTER GREENS",
-        "SCOTCH FILLET",
-        "SHARE JUKE ONE",
-        "QUINOA SALAD",
-        "HANGER 400",
-        "FRIES",
-        "ROAST",
-        "SALMON SALAD",
-        "SCHNITZEL",
-        "PORTERHOUSE 300",
-        "CIGAR",
-        "CHICK RIBS",
-        "PORK BELLY"
-    ]
+    mains = mi.mains
 
     p.set(underline=True)
     p.text("MAINS DINNER\n")
@@ -249,26 +175,14 @@ def make_mains():
 
         for _ in range(1, num_item_extra_info):
             # make extra content for items
-            item_extra_info()
+            mains_item_extra_info()
 
     p.text("\n")
 
-def make_dessert():
+def make_desserts():
     per_item_max = PER_ITEM_MAX
-    #num_of_desserts = random.randomint(1,3)
     num_of_desserts = ITEM_MAX  
-    desserts = [
-        "STICKY DATE PUDDING",
-        "CREME CARAMEL",
-        "CHILDS FROG POND",
-        "CHILDS MOUSSE",
-        "CHURROS",
-        "FONDANT",
-        "CHILDS ICE CREAM",
-        "DESSERT SPEC",
-        "CAKE DISPLAY",
-        "AFFOGATO"
-    ]
+    desserts = mi.desserts
 
     p.set(underline=True)
     p.text("DESSERT\n")
@@ -287,12 +201,18 @@ def make_dessert():
 
         for _ in range(1, num_item_extra_info):
             # make extra content for items
-            item_extra_info()
+            dessert_item_extra_info()
 
     p.text("\n")
 
+def entrees_item_extra_info():
+    p.set(height=1)
+    p.text("1    ex cheese\n")
+    p.text("1    no pepper\n")
+    p.text("1    add jalepenos\n")
+    p.text("  --------------------\n")
 
-def item_extra_info():
+def mains_item_extra_info():
     p.set(height=1)
     p.text("1    MED RARE\n")
     p.text("1    MUSH\n")
@@ -300,6 +220,67 @@ def item_extra_info():
     p.text("1    XTRA GARLIC BUTT\n")
     p.text("  --------------------\n")
 
+def dessert_item_extra_info():
+    p.set(height=1)
+    p.text("1    LEMON SCE\n")
+    p.text("1    ex scoop\n")
+    p.text("  --------------------\n")
+
+def make_standard_docket():
+    # standard docket is entrees, mains, and sometimes desserts.
+    dessert_prob = 0.8
+    make_entrees()
+    make_mains()
+
+    # randomly have a dessert
+    if (random.random() < dessert_prob):
+        make_desserts()
+    else:
+        print('DROPPING dessert')
+
+def make_dessert_docket():
+    p.set(underline=True)
+    p.text("DESSERT\n")
+    p.set(underline=False)
+    p.text("\n\n")
+
+    per_item_max = PER_ITEM_MAX
+    num_of_desserts = ITEM_MAX  
+    desserts = mi.desserts
+
+    for _ in range(1, num_of_desserts):
+        des_name = desserts[random.randint(1,len(desserts)-1)]
+        item_quantity = random.randint(1,per_item_max)
+        des_text = "{0}    {1}\n".format(str(item_quantity), des_name)
+        num_item_extra_info = random.randint(1,item_quantity)
+
+        p.set(bold=True, double_height=True)
+        p.text(des_text)
+        p.set(bold=False, double_height=False)
+
+        for _ in range(1, num_item_extra_info):
+            # make extra content for items
+            dessert_item_extra_info()
+    
+    p.set(underline=True)
+    p.text("CHILDS MENU\n")
+    p.set(underline=False)
+    
+    p.set(bold=True, double_height=True)
+    p.text("4    CHILDS ICE CREAM\n")
+    p.set(bold=False, double_height=False)
+
+    p.set(bold=True, double_height=True)
+    p.text("2    CHILDS FROG POND\n")
+    p.set(bold=False, double_height=False)
+
+    p.set(underline=True)
+    p.text("CHILD DESSERT TOPS\n")
+    p.set(underline=False)
+    
+    p.set(bold=True, double_height=True)
+    p.text("2    CHOCO TOPPING\n")
+    p.set(bold=False, double_height=False)
 
 
 if __name__ == '__main__':
@@ -313,7 +294,21 @@ if __name__ == '__main__':
         # time.sleep(random.randint(1,5))
         docket_heading()
         docket_meta_details()
-        add_covers()
+        if (random.random() < 0.3):
+            # send a call away docket
+            print("CALL AWAY docket")
+            make_call_away_docket()
+        elif (random.random() < 0.5):
+            # make a standard docket
+            print("STANDARD docket")
+            make_standard_docket()
+        else:
+            # make a solely dessert docket
+            print("DESSERT docket")
+            make_dessert_docket()
+
+        p.text("\n\n")
+        p.text("-------------------------------\n")
         p.cut()
         print("should have a docket printed")
 
