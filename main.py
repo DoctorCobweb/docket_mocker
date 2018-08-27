@@ -163,6 +163,16 @@ def make_standard_docket():
     else:
         print('DROPPING dessert')
 
+def make_edge_case_docket():
+    write_course_field("BAR MEALS")
+    p.set(bold=True, double_height=True)
+    p.text("add gravy")
+    p.text("\n")
+    p.text("for the band")
+    p.set(bold=False, double_height=False)
+
+    make_mains()
+
 def make_dessert_docket():
     per_item_max = PER_ITEM_MAX
     num_of_desserts = ITEM_MAX  
@@ -276,7 +286,11 @@ if __name__ == '__main__':
         # time.sleep(random.randint(1,5))
         docket_heading()
         docket_meta_details()
-        if (random.random() < 0.01):
+
+        if (random.random() <0.2):
+            print("EDGE CASE docket")
+            make_edge_case_docket()
+        elif (random.random() < 0.2):
             # send a call away docket
             print("CALL AWAY docket")
             make_call_away_docket()
