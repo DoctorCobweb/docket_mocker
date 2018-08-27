@@ -176,7 +176,14 @@ def make_edge_case_docket():
 def make_empty_docket():
     write_course_field("SPECIAL INSTRUCTIONS")
 
-
+def make_empty_item_info_docket():
+    write_course_field("DESSERT")
+    p.set(bold=True, double_height=True)
+    p.text("1   CHURROS\n")
+    p.set(bold=False, double_height=False)
+    p.text("1        \n")
+    p.text("  --------------------\n")
+    
 def make_dessert_docket():
     per_item_max = PER_ITEM_MAX
     num_of_desserts = ITEM_MAX  
@@ -291,10 +298,13 @@ if __name__ == '__main__':
         docket_heading()
         docket_meta_details()
 
-        if (random.random() <0.01):
+        if (random.random() < 0.9):
+            print("MAKE EMPTY ITEM INFO docket")
+            make_empty_item_info_docket()
+        elif (random.random() <0.01):
             print("EDGE CASE docket")
             make_edge_case_docket()
-        elif (random.random() < 0.8):
+        elif (random.random() < 0.01):
             print("MAKE EMPTY docket")
             make_empty_docket()
         elif (random.random() < 0.2):
