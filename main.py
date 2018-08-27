@@ -173,6 +173,10 @@ def make_edge_case_docket():
 
     make_mains()
 
+def make_empty_docket():
+    write_course_field("SPECIAL INSTRUCTIONS")
+
+
 def make_dessert_docket():
     per_item_max = PER_ITEM_MAX
     num_of_desserts = ITEM_MAX  
@@ -287,9 +291,12 @@ if __name__ == '__main__':
         docket_heading()
         docket_meta_details()
 
-        if (random.random() <0.2):
+        if (random.random() <0.01):
             print("EDGE CASE docket")
             make_edge_case_docket()
+        elif (random.random() < 0.8):
+            print("MAKE EMPTY docket")
+            make_empty_docket()
         elif (random.random() < 0.2):
             # send a call away docket
             print("CALL AWAY docket")
