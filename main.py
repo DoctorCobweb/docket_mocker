@@ -298,20 +298,20 @@ if __name__ == '__main__':
         docket_heading()
         docket_meta_details()
 
-        if (random.random() < 0.9):
+        if (random.random() < 0.01):
             print("MAKE EMPTY ITEM INFO docket")
             make_empty_item_info_docket()
-        elif (random.random() <0.01):
+        elif (random.random() <0.9):
             print("EDGE CASE docket")
             make_edge_case_docket()
         elif (random.random() < 0.01):
             print("MAKE EMPTY docket")
             make_empty_docket()
-        elif (random.random() < 0.2):
+        elif (random.random() < 0.01):
             # send a call away docket
             print("CALL AWAY docket")
             make_call_away_docket()
-        elif (random.random() < 0.8):
+        elif (random.random() < 0.9):
             # make a standard docket
             print("STANDARD docket")
             make_standard_docket()
