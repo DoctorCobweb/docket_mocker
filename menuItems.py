@@ -53,6 +53,8 @@ courseFields = [
   "DESSERT",
   "ADD MODIFIERS",
   "SPECIAL INSTRUCTIONS",
+  "COFFEE TYPES",
+  "SIDES"
 ]
 
 callAwayDocket = {
@@ -63,6 +65,7 @@ callAwayDocket = {
 
 entrees = [
   "ARANCINI",
+  "BREAD ROLL",
   "BRUSCHETTA",
   "BRUSCHETTA TOMAT",
   "CHILDS BOLOG",
@@ -173,6 +176,7 @@ mains =[
 anonymous = [
   "for the band",
   "add gravy",
+  "EXTRA PEPP SAUCE"
 ]
 
 

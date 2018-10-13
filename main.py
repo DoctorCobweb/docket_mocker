@@ -70,7 +70,10 @@ def write_table_line():
             # "TABLE No *13/0*"
             table_num_text = "{0} *{1}/0*\n".format(table_text[table_text_idx],table_num)
             red_color()
-            p.text(table_num_text)
+            # TODO: dont hard code this table transfer stuff. 
+            # just doing it for quick testing`
+            p.text("FROM {0}".format(table_num_text))
+            p.text("TO {0}".format(table_num_text))
             black_color()
         else:
             # "ORDER NUMBER 1"
@@ -192,7 +195,7 @@ def make_dessert_docket():
     write_course_field("DESSERT")
     write_menu_items(desserts, dessert_item_extra_info)
 
-    write_course_field("CHILDS MENU")
+    write_course_field("CHILDS MENUS")
 
     p.set(bold=True, double_height=True)
     p.text("4    CHILDS ICE CREAM\n")
@@ -287,7 +290,8 @@ def black_color():
 
 
 if __name__ == '__main__':
-    num_of_dockets = random.randint(1,1)
+    #num_of_dockets = random.randint(1,100)
+    num_of_dockets = 100
     print('generating some mock orders')
     print('going to send ' + str(num_of_dockets) + ' dockets')
 
@@ -301,7 +305,7 @@ if __name__ == '__main__':
         if (random.random() < 0.01):
             print("MAKE EMPTY ITEM INFO docket")
             make_empty_item_info_docket()
-        elif (random.random() <0.9):
+        elif (random.random() <0.01):
             print("EDGE CASE docket")
             make_edge_case_docket()
         elif (random.random() < 0.01):
@@ -311,7 +315,7 @@ if __name__ == '__main__':
             # send a call away docket
             print("CALL AWAY docket")
             make_call_away_docket()
-        elif (random.random() < 0.9):
+        elif (random.random() < 0.99):
             # make a standard docket
             print("STANDARD docket")
             make_standard_docket()
